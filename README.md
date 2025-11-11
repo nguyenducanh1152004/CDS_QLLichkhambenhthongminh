@@ -1,146 +1,125 @@
-# Tên Dự Án
+<h2 align="center">
+    <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
+    🎓 Faculty of Information Technology (DaiNam University)
+    </a>
+</h2>
+<h2 align="center">
+   ĐỀ TÀI: HỆ THỐNG ĐẶT LỊCH KHÁM BỆNH (MEDICAL APPOINTMENT SYSTEM)
+</h2>
+<p align="center"><strong>Ngành / Môn: Công nghệ thông tin — Hướng dẫn: [Tên giảng viên hướng dẫn]</strong></p>
+<div align="center">
+    <p align="center">
+        <img src="docs/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
+        <img src="docs/fitdnu_logo.png" alt="FIT Logo" width="180"/>
+        <img src="docs/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
+    </p>
 
-Mô tả ngắn gọn và súc tích về mục tiêu của dự án, tại sao dự án này hữu ích và người dùng mục tiêu.
+[![AIoTLab](https://img.shields.io/badge/AIoTLab-green?style=for-the-badge)](https://www.facebook.com/DNUAIoTLab)
+[![Faculty of Information Technology](https://img.shields.io/badge/Faculty%20of%20Information%20Technology-blue?style=for-the-badge)](https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin)
+[![DaiNam University](https://img.shields.io/badge/DaiNam%20University-orange?style=for-the-badge)](https://dainam.edu.vn)
 
-## Mục lục
-- [Tổng quan](#tổng-quan)
-- [Tính năng](#tính-năng)
-- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
-- [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
-- [Cài đặt nhanh](#cài-đặt-nhanh)
-- [Cấu hình](#cấu-hình)
-- [Sử dụng](#sử-dụng)
-- [Các lệnh hữu ích (scripts)](#các-lệnh-hữu-ích-scripts)
-- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
-- [Biến môi trường](#biến-môi-trường)
-- [Kiểm thử](#kiểm-thử)
-- [Triển khai](#triển-khai)
-- [Đóng góp](#đóng-góp)
-- [Ghi chú về mã nguồn & phong cách](#ghi-chú-về-mã-nguồn--phong-cách)
-- [Xử lý sự cố thường gặp](#xử-lý-sự-cố-thường-gặp)
-- [Bản quyền & Giấy phép](#bản-quyền--giấy-phép)
-- [Liên hệ](#liên-hệ)
+</div>
 
-## Tổng quan
-Mô tả chi tiết hơn: chức năng chính, luồng hoạt động cơ bản, những vấn đề dự án giải quyết.
+## 📖 **1. Giới thiệu hệ thống**  
+Hệ thống **Medical Appointment System** là giải pháp web toàn diện cho việc quản lý và đặt lịch khám bệnh tại các phòng khám, bệnh viện. Hệ thống được phát triển bằng **Flask (Python)** và **SQLite**, cung cấp giao diện thân thiện và các tính năng quản lý chuyên nghiệp.
 
-## Tính năng
-- Tính năng 1: mô tả ngắn
-- Tính năng 2: mô tả ngắn
-- Tính năng 3: mô tả ngắn
+- **Mục tiêu chính**: Tự động hóa quy trình đặt lịch khám bệnh, quản lý thông tin bệnh nhân, bác sĩ và lịch hẹn
+- **Phạm vi**: Quản lý người dùng, bệnh nhân, bác sĩ, lịch hẹn, gửi email xác nhận, thống kê báo cáo
+- **Công nghệ**: Flask + SQLite + Bootstrap 5 + Chart.js + Flask-Mail
+- **Người dùng mục tiêu**: Quản trị viên, nhân viên lễ tân, bác sĩ, bệnh nhân
 
-## Công nghệ sử dụng
-- Ngôn ngữ: (ví dụ: JavaScript / TypeScript / Python)
-- Framework: (ví dụ: Node.js, Express, React, Vue)
-- Cơ sở dữ liệu: (ví dụ: PostgreSQL, MongoDB)
-- Công cụ khác: Docker, CI/CD, ESLint, Prettier
+## ✨ **Tính năng chính**
 
-## Yêu cầu hệ thống
-- Node.js >= 14 (nếu dùng Node)
-- NPM or Yarn
-- Docker (tuỳ chọn)
-- Bộ nhớ/disk tối thiểu tuỳ dự án
+### 🔐 **Xác thực & Phân quyền**
+- **4 vai trò người dùng**: 
+  - 👨‍💼 **Admin**: Toàn quyền quản trị hệ thống
+  - 👩‍💼 **Receptionist**: Quản lý bệnh nhân, bác sĩ, lịch hẹn
+  - 👨‍⚕️ **Doctor**: Xem lịch làm việc, thông tin bệnh nhân
+  - 👤 **Patient**: Đặt lịch, quản lý thông tin cá nhân
+- 🔒 Đăng nhập/Đăng ký với mã hóa **SHA-256**
+- 🎯 Session-based authentication với **Flask-Login**
+- 🔑 Phân quyền truy cập theo vai trò với decorators
 
-## Cài đặt nhanh
-1. Clone repo:
-   git clone <repo-url>
-2. Vào thư mục dự án:
-   cd <project-folder>
-3. Sao chép file cấu hình môi trường mẫu:
-   cp .env.example .env
-4. Cài phụ thuộc:
-   npm install
-   hoặc
-   yarn install
+### 👥 **Quản lý Bệnh nhân**
+- 📋 **CRUD đầy đủ**: Thông tin cá nhân, liên hệ, địa chỉ, ngày sinh, giới tính
+- 📞 Quản lý số điện thoại và email duy nhất
+- 📊 Lịch sử khám bệnh chi tiết
+- 🔍 Tìm kiếm và lọc nâng cao
+- 📅 Theo dõi ngày tạo và cập nhật
 
-## Cấu hình
-- Mở file `.env` và cấu hình các biến cần thiết:
-  - DATABASE_URL=...
-  - PORT=3000
-  - JWT_SECRET=...
-- Nếu dùng Docker, kiểm tra `docker-compose.yml` và các biến tương ứng.
+### 👨‍⚕️ **Quản lý Bác sĩ**
+- 🏥 **Thông tin chuyên môn**: Tên, chuyên khoa, số điện thoại, email
+- 📅 **Lịch làm việc**: Ngày làm việc, giờ làm việc cụ thể
+- 🔄 Import từ file CSV tự động
+- 📊 Quản lý lịch trình và khả năng tiếp nhận
 
-## Sử dụng
-- Chạy trong môi trường phát triển:
-  npm run dev
-  hoặc
-  yarn dev
-- Mở trình duyệt tại:
-  http://localhost:3000  (thay theo PORT cấu hình)
+### 📅 **Quản lý Lịch hẹn**
+- ➕ **Đặt lịch linh hoạt**: Có tài khoản và không cần tài khoản
+- 📧 **Gửi email xác nhận**: Template HTML chuyên nghiệp
+- 🔄 **Trạng thái đa dạng**: Scheduled, Confirmed, Completed, Cancelled
+- ✏️ **Chỉnh sửa lịch**: Bệnh nhân có thể chỉnh sửa/hủy lịch
+- ⏰ **Kiểm tra trùng lịch**: Tự động kiểm tra khung giờ khả dụng
 
-## Các lệnh hữu ích (scripts)
-- npm run dev — chạy ứng dụng ở chế độ phát triển
-- npm run build — build mã nguồn để deploy
-- npm start — chạy ứng dụng đã build
-- npm test — chạy test
-- npm run lint — kiểm tra coding style
+### 📧 **Hệ thống Email**
+- ✉️ **Gửi email xác nhận**: Tự động khi đặt lịch thành công
+- 🎨 **Template HTML**: Thiết kế chuyên nghiệp, responsive
+- 📋 **Thông tin đầy đủ**: Mã lịch hẹn, bác sĩ, ngày giờ, hướng dẫn
+- 🔧 **Cấu hình SMTP**: Hỗ trợ Gmail và các SMTP khác
 
-(Điều chỉnh các lệnh trên theo `package.json` thực tế của dự án.)
+### 📊 **Dashboard & Báo cáo**
+- 📈 **Thống kê tổng quan**: 
+  - Tổng số bệnh nhân, bác sĩ, lịch hẹn
+  - Lịch hẹn hôm nay, lịch hẹn gần đây
+- 📊 **Biểu đồ động** (Chart.js):
+  - Phân bố thống kê (Doughnut Chart)
+  - Xu hướng theo thời gian
+- 📋 Danh sách lịch hẹn gần đây
+- 🔄 Real-time updates với API endpoints
 
-## Cấu trúc thư mục (ví dụ)
-- src/         — mã nguồn chính
-  - controllers/
-  - services/
-  - models/
-  - routes/
-- public/      — tệp tĩnh
-- config/      — cấu hình
-- tests/       — unit/integration tests
-- docs/        — tài liệu bổ sung
-- .env.example — mẫu biến môi trường
-- README.md    — tài liệu này
+---
 
-## Biến môi trường
-Liệt kê các biến quan trọng (ví dụ):
-- PORT — cổng chạy ứng dụng
-- NODE_ENV — development | production
-- DATABASE_URL — chuỗi kết nối DB
-- JWT_SECRET — khoá dùng cho JWT
+## 🔧 **2. Công nghệ sử dụng**  
 
-Gợi ý: không commit `.env` chứa giá trị nhạy cảm.
+<p align="center">
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  </a>
+  <a href="https://flask.palletsprojects.com/">
+    <img src="https://img.shields.io/badge/Flask-2.3.3-000000?style=for-the-badge&logo=flask&logoColor=white" />
+  </a>
+  <a href="https://www.sqlite.org/">
+    <img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+  </a>
+  <a href="https://getbootstrap.com/">
+    <img src="https://img.shields.io/badge/Bootstrap-5.1-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" />
+  </a>
+  <a href="https://www.chartjs.org/">
+    <img src="https://img.shields.io/badge/Chart.js-3.9-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white" />
+  </a>
+  <a href="https://jinja.palletsprojects.com/">
+    <img src="https://img.shields.io/badge/Jinja2-Template-B41717?style=for-the-badge&logo=jinja&logoColor=white" />
+  </a>
+</p>
 
-## Kiểm thử
-- Chạy test:
-  npm test
-- Cấu trúc test: mô tả nơi đặt test, công cụ test (Jest, Mocha,...)
-- Cách chạy test coverage:
-  npm run test:coverage
+### **Backend**
+- 🐍 **Python 3.9+**: Ngôn ngữ lập trình chính
+- 🌶️ **Flask 2.3.3**: Web framework nhẹ và linh hoạt
+- 🗄️ **SQLite**: Cơ sở dữ liệu nhúng, không cần cài đặt server
+- 🔐 **Flask-Login**: Quản lý session và authentication
+- 📧 **Flask-Mail**: Gửi email xác nhận
+- 🗃️ **SQLAlchemy**: ORM cho database operations
 
-## Triển khai
-- Hướng dẫn triển khai cơ bản (Heroku, Vercel, Docker, VPS):
-  - Build: npm run build
-  - Start: npm start
-- Nếu dùng Docker:
-  docker build -t project-name .
-  docker run -p 3000:3000 --env-file .env project-name
+### **Frontend**
+- 🎨 **Bootstrap 5.1**: CSS framework responsive
+- ✨ **Font Awesome 6**: Icon library
+- 📊 **Chart.js 3.9**: Thư viện biểu đồ động
+- 🎯 **Jinja2**: Template engine
+- 🌐 **HTML5, CSS3, JavaScript**: Core web technologies
 
-## Đóng góp
-- Fork repository
-- Tạo nhánh feature: git checkout -b feature/ten-tinh-nang
-- Commit và push: git commit -m "Mô tả ngắn" && git push
-- Tạo Pull Request, mô tả thay đổi và cách test
-- Tuân thủ quy ước commit và hướng dẫn trong CONTRIBUTING.md (nếu có)
-
-## Ghi chú về mã nguồn & phong cách
-- Dùng ESLint + Prettier để thống nhất style
-- Viết comment rõ ràng cho các hàm phức tạp
-- Đặt tên biến/func rõ ràng, dùng tiếng Anh cho code nếu dự án quốc tế
-
-## Xử lý sự cố thường gặp
-- Lỗi cài dependency: xoá node_modules && cài lại
-  rm -rf node_modules package-lock.json && npm install
-- Lỗi kết nối DB: kiểm tra DATABASE_URL, DB đang chạy
-- Lỗi port đã dùng: đổi PORT trong .env
-
-## Bản quyền & Giấy phép
-- License: MIT (hoặc thay đổi theo dự án)
-- Ghi rõ năm và tên tác giả nếu cần.
-
-## Liên hệ
-- Tác giả: Tên tác giả
-- Email: email@example.com
-- Repo: <repo-url>
-
-## Lời cảm ơn
-- Cảm ơn các thư viện và cộng đồng mã nguồn mở đã hỗ trợ.
-
+### **Thư viện Python chính**
+```python
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+Flask-Login==0.6.3
+Flask-Mail==0.9.1
