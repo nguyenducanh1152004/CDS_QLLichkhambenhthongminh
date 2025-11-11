@@ -296,13 +296,6 @@ C:\BTL_
 
 ---
 
-## 📜 **7. License**
-
-Dự án này được phát triển cho mục đích học tập tại **Khoa Công nghệ Thông tin - Đại học Đại Nam**.
-
-© 2025 - Đại học Đại Nam. All rights reserved.
-
----
 
 ## 📬 **8. Liên hệ**
 
@@ -316,7 +309,7 @@ Dự án này được phát triển cho mục đích học tập tại **Khoa C
 - **Trường:** Đại học Đại Nam
 - 🌐 **Website:** [dainam.edu.vn/vi/khoa-cong-nghe-thong-tin](https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin)
 - 📱 **Fanpage:** [AIoTLab - FIT DNU](https://www.facebook.com/DNUAIoTLab)
-- 📧 **Email:** contact@example.com
+- 📧 **Email:** anhnguyen0934422067@example.com
 
 
 ### **🔗 Repository**
@@ -336,3 +329,11 @@ Dự án này được phát triển cho mục đích học tập tại **Khoa C
 
 
 </div>
+
+## 📜 **7. License**
+
+Dự án này được phát triển cho mục đích học tập tại **Khoa Công nghệ Thông tin - Đại học Đại Nam**.
+
+© 2025 - Đại học Đại Nam. All rights reserved.
+
+---
