@@ -330,10 +330,9 @@ C:\BTL_
 
 </div>
 
-## 📜 **7. License**
+
 
 Dự án này được phát triển cho mục đích học tập tại **Khoa Công nghệ Thông tin - Đại học Đại Nam**.
 
 © 2025 - Đại học Đại Nam. All rights reserved.
 
----
