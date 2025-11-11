@@ -4,9 +4,6 @@
     </a>
 </h2>
 <h2 align="center">
-   ĐỀ TÀI: HỆ THỐNG ĐẶT LỊCH KHÁM BỆNH (MEDICAL APPOINTMENT SYSTEM)
-</h2>
-<p align="center"><strong>Ngành / Môn: Công nghệ thông tin — Hướng dẫn: [Tên giảng viên hướng dẫn]</strong></p>
 <div align="center">
     <p align="center">
         <img src="docs/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
@@ -123,3 +120,55 @@ Flask-SQLAlchemy==3.0.5
 Werkzeug==2.3.7
 Flask-Login==0.6.3
 Flask-Mail==0.9.1
+```
+
+---
+
+## 🖼️ **3. Giao diện hệ thống**  
+
+### **3.1. Trang Đăng nhập**
+<p align="center">
+  <img src="docs/login.png" alt="Giao diện đăng nhập" width="600"/>
+  <br>
+  <em>Giao diện đăng nhập: Màn hình xác thực người dùng với validation form và thông báo lỗi rõ ràng</em>
+</p>
+
+### **3.2. Dashboard - Trang chủ**
+<p align="center">
+  <img src="docs/dashboard.png" alt="Dashboard" width="600"/>
+  <br>
+  <em>Dashboard: Giao diện bệnh nhân </em>
+</p>
+
+### **3.3. Quản lý Người dùng và Bác sĩ **
+<p align="center">
+  <img src="docs/quanly.png" alt="Quản lý người dùng và bác sĩ" width="600"/>
+  <br>
+  <em>Quản lý: Danh sách sách bác sĩ và người </em>
+</p>
+
+### **3.4. Quản lý bệnh nhân và lịch khám bệnh **
+<p align="center">
+  <img src="docs/nguoidung.png" alt="Chi tiết lịch khám " width="600"/>
+  <br>
+  <em>Chi tiết bệnh nhân: Hiển thị đầy đủ thông tin bệnh nhân.</em>
+</p>
+
+### **3.5. Quản lý Lịch hẹn **
+<p align="center">
+  <img src="docs/lichhen.png" alt="Quản lý lịch hẹn" width="600"/>
+  <br>
+  <em>Quản lý người dùng: admin chỉnh sửa và xác nhận  </em>
+</p>
+
+
+### **3.6. Quản lý bác sĩ **
+<p align="center">
+  <img src="docs/bacsi.png" alt="Thông tin" width="600"/>
+  <br>
+  <em>Thông tin : Bác sĩ</em>
+</p>
+
+
+
+---
