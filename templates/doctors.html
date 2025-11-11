@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user-md me-2"></i>Quản Lý Bác Sĩ</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+        <i class="fas fa-plus me-1"></i>Thêm Bác Sĩ
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ Tên</th>
+                        <th>Chuyên Khoa</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Ngày Làm Việc</th>
+                        <th>Giờ Làm Việc</th>
+                        <th>Ngày Tạo</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doctor in doctors %}
+                    <tr>
+                        <td>{{ doctor.id }}</td>
+                        <td><strong>{{ doctor.name }}</strong></td>
+                        <td>
+                            <span class="badge bg-info">{{ doctor.specialization }}</span>
+                        </td>
+                        <td>{{ doctor.phone }}</td>
+                        <td>{{ doctor.email or 'N/A' }}</td>
+                        <td>{{ doctor.available_days }}</td>
+                        <td>{{ doctor.available_time }}</td>
+                        <td>{{ doctor.created_at[:10] }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" data-doctor-id="{{ doctor.id }}" onclick="deleteDoctor(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">Chưa có bác sĩ nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm Bác Sĩ Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="doctorForm">
+                    <div class="mb-3">
+                        <label class="form-label">Họ Tên *</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Chuyên Khoa *</label>
+                        <input type="text" class="form-control" name="specialization" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Điện Thoại *</label>
+                        <input type="tel" class="form-control" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày Làm Việc *</label>
+                        <input type="text" class="form-control" name="days" placeholder="VD: Thứ 2,4,6 hoặc Thứ 2-6" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giờ Làm Việc *</label>
+                        <input type="text" class="form-control" name="time" placeholder="VD: 08:00-12:00" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="addDoctor()">Thêm Bác Sĩ</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addDoctor() {
+    const form = document.getElementById('doctorForm');
+    const formData = new FormData(form);
+    
+    const data = {
+        name: formData.get('name'),
+        specialization: formData.get('specialization'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        days: formData.get('days'),
+        time: formData.get('time')
+    };
+
+    if (!data.name || !data.specialization || !data.phone || !data.days || !data.time) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        return;
+    }
+
+    fetch('/add_doctor', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    })
+    .catch(error => {
+        alert('Lỗi kết nối!');
+    });
+}
+
+function deleteDoctor(button) {
+    const doctorId = button.getAttribute('data-doctor-id');
+    if (confirm('Bạn có chắc muốn xóa bác sĩ này?')) {
+        fetch(`/delete_doctor/${doctorId}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white mb-4">
+            <div class="card-body">
+                <h1 class="card-title"><i class="fas fa-hospital-alt me-2"></i>Hệ Thống Đặt Lịch Khám Bệnh</h1>
+                <p class="card-text">Quản lý bệnh nhân, bác sĩ và lịch hẹn khám bệnh hiệu quả</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="dashboard-cards">
+    <!-- Cards will be loaded by JavaScript -->
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Lịch Hẹn Gần Đây
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Bệnh Nhân</th>
+                                <th>Bác Sĩ</th>
+                                <th>Ngày</th>
+                                <th>Giờ</th>
+                                <th>Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-appointments">
+                            <!-- Data will be loaded by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Thống Kê Nhanh
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statsChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load dashboard data
+    fetch('/dashboard_data')
+        .then(response => response.json())
+        .then(data => {
+            // Update cards
+            const cardsContainer = document.getElementById('dashboard-cards');
+            cardsContainer.innerHTML = `
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Tổng Bệnh Nhân</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${data.total_patients}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-user-injured fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Tổng Bác Sĩ</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${data.total_doctors}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Tổng Lịch Hẹn</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${data.total_appointments}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Lịch Hẹn Hôm Nay</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${data.today_appointments}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Update recent appointments
+            const appointmentsContainer = document.getElementById('recent-appointments');
+            if (data.recent_appointments.length > 0) {
+                appointmentsContainer.innerHTML = data.recent_appointments.map(app => `
+                    <tr>
+                        <td>${app.patient_name}</td>
+                        <td>${app.doctor_name}</td>
+                        <td>${app.date}</td>
+                        <td>${app.time}</td>
+                        <td><span class="badge bg-${getStatusBadge(app.status)}">${app.status}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                appointmentsContainer.innerHTML = '<tr><td colspan="5" class="text-center">Không có lịch hẹn nào</td></tr>';
+            }
+
+            // Update chart
+            updateChart(data);
+        });
+
+    function getStatusBadge(status) {
+        const statusMap = {
+            'Scheduled': 'primary',
+            'Completed': 'success',
+            'Cancelled': 'danger',
+            'Confirmed': 'info'
+        };
+        return statusMap[status] || 'secondary';
+    }
+
+    function updateChart(data) {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Bệnh Nhân', 'Bác Sĩ', 'Lịch Hẹn'],
+                datasets: [{
+                    data: [data.total_patients, data.total_doctors, data.total_appointments],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

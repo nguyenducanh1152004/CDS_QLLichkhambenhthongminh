@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white mb-4">
+            <div class="card-body">
+                <h1 class="card-title"><i class="fas fa-user-injured me-2"></i>Dashboard Bệnh Nhân</h1>
+                <p class="card-text">Xin chào <strong>{{ patient.name }}</strong>! Đây là trang quản lý của bạn</p>
+                <p class="card-text"><small>Email: <strong>{{ patient.email or 'Chưa cập nhật' }}</strong> - Email xác nhận lịch hẹn sẽ được gửi đến địa chỉ này</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-plus me-2"></i>Đặt Lịch Hẹn Mới
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="appointmentForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Chọn Bác Sĩ *</label>
+                                <select class="form-select" name="doctor_id" required id="doctorSelect">
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    {% for doctor in doctors %}
+                                    <option value="{{ doctor.id }}" data-days="{{ doctor.available_days }}" data-time="{{ doctor.available_time }}">
+                                        {{ doctor.name }} - {{ doctor.specialization }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text" id="doctorSchedule"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Ngày Hẹn *</label>
+                                <input type="date" class="form-control" name="date" required min="{{ today }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Giờ Hẹn *</label>
+                                <input type="time" class="form-control" name="time" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Triệu chứng / Ghi chú</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Mô tả triệu chứng..."></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Lưu ý:</strong> Email xác nhận sẽ được gửi đến <strong>{{ patient.email or 'email của bạn' }}</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="bookAppointment()">
+                        <i class="fas fa-calendar-check me-2"></i>Đặt Lịch
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Lịch Sử Đặt Hẹn
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Bác Sĩ</th>
+                                <th>Chuyên Khoa</th>
+                                <th>Ngày Hẹn</th>
+                                <th>Giờ Hẹn</th>
+                                <th>Trạng Thái</th>
+                                <th>Ghi Chú</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr data-appointment-id="{{ appointment.id }}">
+                                <td>{{ appointment.doctor_name }}</td>
+                                <td>{{ appointment.specialization }}</td>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if appointment.status == 'Completed' else 'primary' if appointment.status == 'Scheduled' else 'warning' if appointment.status == 'Confirmed' else 'danger' }}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td class="appointment-notes">{{ appointment.notes or 'N/A' }}</td>
+                                <td>
+                                    {% if appointment.status in ['Scheduled', 'Confirmed'] %}
+                                    <button class="btn btn-warning btn-sm me-1" onclick="editAppointment('{{ appointment.id }}')" 
+        data-bs-toggle="tooltip" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="cancelAppointment('{{ appointment.id }}')"
+        data-bs-toggle="tooltip" title="Hủy lịch">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    {% else %}
+                                    <span class="text-muted">Không thể chỉnh sửa</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Chưa có lịch hẹn nào</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2"></i>Thông Tin Cá Nhân
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Họ tên:</strong> {{ patient.name }}</p>
+                <p><strong>Số điện thoại:</strong> {{ patient.phone }}</p>
+                <p><strong>Email:</strong> {{ patient.email or 'N/A' }}</p>
+                <p><strong>Địa chỉ:</strong> {{ patient.address or 'N/A' }}</p>
+                <p><strong>Ngày sinh:</strong> {{ patient.date_of_birth or 'N/A' }}</p>
+                <p><strong>Giới tính:</strong> {{ patient.gender or 'N/A' }}</p>
+                
+                <button class="btn btn-outline-primary btn-sm mt-2" onclick="editPatientInfo()">
+                    <i class="fas fa-edit me-1"></i>Cập nhật thông tin
+                </button>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Hướng Dẫn
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Đặt lịch trước ít nhất 1 ngày</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Có mặt trước 15 phút</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Mang theo CMND/CCCD</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Có thể chỉnh sửa lịch trước 24h</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Liên hệ 1900-1234 để được hỗ trợ</li>
+                    <li><i class="fas fa-envelope text-info me-2"></i>Email xác nhận sẽ gửi về: <strong>{{ patient.email or 'email của bạn' }}</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chỉnh sửa lịch hẹn -->
+<div class="modal fade" id="editAppointmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh Sửa Lịch Hẹn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAppointmentForm">
+                    <input type="hidden" id="edit_appointment_id" name="appointment_id">
+                    <div class="mb-3">
+                        <label class="form-label">Bác Sĩ</label>
+                        <input type="text" class="form-control" id="edit_doctor_name" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày Hẹn *</label>
+                        <input type="date" class="form-control" id="edit_appointment_date" name="date" required min="{{ today }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giờ Hẹn *</label>
+                        <input type="time" class="form-control" id="edit_appointment_time" name="time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú / Triệu chứng</label>
+                        <textarea class="form-control" id="edit_appointment_notes" name="notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="updateAppointment()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cập nhật thông tin bệnh nhân -->
+<div class="modal fade" id="editPatientModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập Nhật Thông Tin Cá Nhân</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPatientForm">
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên *</label>
+                        <input type="text" class="form-control" name="name" value="{{ patient.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại *</label>
+                        <input type="tel" class="form-control" name="phone" value="{{ patient.phone }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-control" name="email" value="{{ patient.email or '' }}" required>
+                        <div class="form-text">Email này sẽ nhận thông báo xác nhận lịch hẹn</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <textarea class="form-control" name="address" rows="2">{{ patient.address or '' }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Ngày sinh</label>
+                                <input type="date" class="form-control" name="date_of_birth" value="{{ patient.date_of_birth or '' }}" max="{{ today }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Giới tính</label>
+                                <select class="form-select" name="gender">
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="Nam" {{ 'selected' if patient.gender == 'Nam' }}>Nam</option>
+                                    <option value="Nữ" {{ 'selected' if patient.gender == 'Nữ' }}>Nữ</option>
+                                    <option value="Khác" {{ 'selected' if patient.gender == 'Khác' }}>Khác</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="updatePatientInfo()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Hiển thị lịch làm việc của bác sĩ
+document.getElementById('doctorSelect').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const scheduleDiv = document.getElementById('doctorSchedule');
+    
+    if (selectedOption.value) {
+        const days = selectedOption.getAttribute('data-days');
+        const time = selectedOption.getAttribute('data-time');
+        scheduleDiv.innerHTML = `<small><strong>Lịch làm việc:</strong> ${days} | ${time}</small>`;
+    } else {
+        scheduleDiv.innerHTML = '';
+    }
+});
+
+function bookAppointment() {
+    const form = document.getElementById('appointmentForm');
+    const formData = new FormData(form);
+    
+    const data = {
+        doctor_id: formData.get('doctor_id'),
+        date: formData.get('date'),
+        time: formData.get('time'),
+        notes: formData.get('notes')
+    };
+
+    if (!data.doctor_id || !data.date || !data.time) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        return;
+    }
+
+    // Hiển thị loading
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+    button.disabled = true;
+
+    fetch('/patient/book_appointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    })
+    .catch(error => {
+        alert('Lỗi kết nối! Vui lòng thử lại.');
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function editAppointment(appointmentId) {
+    console.log('Đang chỉnh sửa lịch hẹn ID:', appointmentId);
+    
+    // Tìm hàng trong bảng có data-appointment-id tương ứng
+    const row = document.querySelector(`tr[data-appointment-id="${appointmentId}"]`);
+    
+    if (!row) {
+        console.error('Không tìm thấy lịch hẹn với ID:', appointmentId);
+        alert('Không tìm thấy thông tin lịch hẹn!');
+        return;
+    }
+    
+    const cells = row.querySelectorAll('td');
+    const appointmentData = {
+        doctor_name: cells[0].textContent,
+        specialization: cells[1].textContent,
+        appointment_date: cells[2].textContent,
+        appointment_time: cells[3].textContent,
+        notes: cells[5].textContent
+    };
+
+    console.log('Dữ liệu lịch hẹn:', appointmentData);
+
+    // Điền dữ liệu vào modal
+    document.getElementById('edit_appointment_id').value = appointmentId;
+    document.getElementById('edit_doctor_name').value = appointmentData.doctor_name + ' - ' + appointmentData.specialization;
+    document.getElementById('edit_appointment_date').value = appointmentData.appointment_date;
+    document.getElementById('edit_appointment_time').value = appointmentData.appointment_time;
+    document.getElementById('edit_appointment_notes').value = appointmentData.notes === 'N/A' ? '' : appointmentData.notes;
+    
+    // Hiển thị modal
+    const modal = new bootstrap.Modal(document.getElementById('editAppointmentModal'));
+    modal.show();
+}
+
+function updateAppointment() {
+    const form = document.getElementById('editAppointmentForm');
+    const formData = new FormData(form);
+    
+    const data = {
+        appointment_id: formData.get('appointment_id'),
+        date: formData.get('date'),
+        time: formData.get('time'),
+        notes: formData.get('notes')
+    };
+
+    console.log('Dữ liệu cập nhật:', data);
+
+    if (!data.date || !data.time) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        return;
+    }
+
+    // Hiển thị loading
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang cập nhật...';
+    button.disabled = true;
+
+    fetch('/patient/update_appointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            // Đóng modal và reload trang
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editAppointmentModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+        alert('Lỗi kết nối! Vui lòng thử lại.');
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function cancelAppointment(appointmentId) {
+    console.log('Đang hủy lịch hẹn ID:', appointmentId);
+    
+    if (confirm('Bạn có chắc muốn hủy lịch hẹn này?')) {
+        // Hiển thị loading
+        const button = event.target;
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        button.disabled = true;
+
+        fetch(`/patient/cancel_appointment/${appointmentId}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            alert('Lỗi kết nối! Vui lòng thử lại.');
+        })
+        .finally(() => {
+            button.innerHTML = originalHTML;
+            button.disabled = false;
+        });
+    }
+}
+
+function editPatientInfo() {
+    console.log('Mở modal chỉnh sửa thông tin');
+    const modal = new bootstrap.Modal(document.getElementById('editPatientModal'));
+    modal.show();
+}
+
+function updatePatientInfo() {
+    const form = document.getElementById('editPatientForm');
+    const formData = new FormData(form);
+    
+    const data = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        address: formData.get('address'),
+        date_of_birth: formData.get('date_of_birth'),
+        gender: formData.get('gender')
+    };
+
+    console.log('Dữ liệu cập nhật thông tin:', data);
+
+    if (!data.name || !data.phone || !data.email) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        return;
+    }
+
+    // Hiển thị loading
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang cập nhật...';
+    button.disabled = true;
+
+    fetch('/patient/update_info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            // Đóng modal và reload trang
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editPatientModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+        alert('Lỗi kết nối! Vui lòng thử lại.');
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Khởi tạo tooltips khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+    // Khởi tạo tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Debug: Kiểm tra xem có lịch hẹn nào không
+    const appointments = document.querySelectorAll('tr[data-appointment-id]');
+    console.log('Tổng số lịch hẹn:', appointments.length);
+    appointments.forEach(app => {
+        console.log('Lịch hẹn ID:', app.getAttribute('data-appointment-id'));
+    });
+});
+</script>
+{% endblock %}

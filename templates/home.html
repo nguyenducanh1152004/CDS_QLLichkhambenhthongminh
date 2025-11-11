@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white mb-4">
+            <div class="card-body">
+                <h1 class="card-title"><i class="fas fa-hospital-alt me-2"></i>Hệ Thống Đặt Lịch Khám Bệnh</h1>
+                <p class="card-text">Xin chào <strong>{{ current_user.name }}</strong>! Chào mừng bạn đến với hệ thống quản lý</p>
+                <p class="card-text">
+                    <span class="badge bg-light text-dark">
+                        {% if current_user.role == 'admin' %}
+                        👨‍💼 Quản trị viên
+                        {% elif current_user.role == 'receptionist' %}
+                        👩‍💼 Nhân viên lễ tân
+                        {% else %}
+                        👤 Bệnh nhân
+                        {% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Tổng Bệnh Nhân</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_patients }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-injured fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Tổng Bác Sĩ</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_doctors }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Tổng Lịch Hẹn</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_appointments }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Lịch Hẹn Hôm Nay</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="today-appointments">0</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Lịch Hẹn Gần Đây
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Bệnh Nhân</th>
+                                <th>Bác Sĩ</th>
+                                <th>Ngày</th>
+                                <th>Giờ</th>
+                                <th>Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in recent_appointments %}
+                            <tr>
+                                <td>{{ appointment.patient_name }}</td>
+                                <td>{{ appointment.doctor_name }}</td>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'primary' if appointment.status == 'Scheduled' else 'success' if appointment.status == 'Completed' else 'danger' if appointment.status == 'Cancelled' else 'info' }}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Không có lịch hẹn nào</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Thống Kê Nhanh
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statsChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load today appointments count
+    fetch('/dashboard_data')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('today-appointments').textContent = data.today_appointments;
+            
+            // Update chart
+            updateChart(data);
+        });
+
+    function updateChart(data) {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Bệnh Nhân', 'Bác Sĩ', 'Lịch Hẹn'],
+                datasets: [{
+                    data: [data.total_patients, data.total_doctors, data.total_appointments],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
