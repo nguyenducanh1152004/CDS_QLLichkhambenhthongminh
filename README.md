@@ -306,7 +306,7 @@ Dự án này được phát triển cho mục đích học tập tại **Khoa C
 
 ---
 
-## 📬 **9. Liên hệ**
+## 📬 **8. Liên hệ**
 
 ### **👨‍🎓 Sinh viên thực hiện**
 - **Họ tên:** Nguyễn Đức Anh
