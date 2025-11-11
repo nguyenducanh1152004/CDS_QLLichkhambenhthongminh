@@ -170,5 +170,169 @@ Flask-Mail==0.9.1
 </p>
 
 
+---
+
+## ⚙️ **4. Cài đặt & Chạy ứng dụng**
+
+### 📋 **4.1. Yêu cầu hệ thống**
+
+- 🐍 **Python**: Phiên bản 3.9 trở lên (khuyến nghị Python 3.10 hoặc 3.11)
+- 💻 **Hệ điều hành**: Windows, macOS, hoặc Linux
+- 🖥️ **IDE**: VS Code, PyCharm, hoặc bất kỳ text editor nào
+- 💾 **Bộ nhớ**: Tối thiểu 2GB RAM, khuyến nghị 4GB
+- 💿 **Dung lượng**: Tối thiểu 200MB trống
+
+### 📥 **4.2. Các bước cài đặt**
+
+#### **🧰 Bước 1: Chuẩn bị môi trường**
+
+**Cài đặt Python:**
+- Tải Python tại: [python.org/downloads](https://www.python.org/downloads/)
+- Kiểm tra cài đặt:
+```powershell
+python --version
+pip --version
+```
+
+**Clone hoặc Download dự án:**
+```powershell
+# Nếu có Git
+https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh.git
+
+# Hoặc download ZIP và giải nén
+cd c:\cds
+```
+
+#### **🔧 Bước 2: Tạo môi trường ảo (Virtual Environment)**
+
+```powershell
+# Tạo virtual environment
+python -m venv venv
+
+# Kích hoạt trên Windows
+.\venv\Scripts\activate
+
+# Kích hoạt trên Linux/MacOS
+source venv/bin/activate
+```
+
+Sau khi kích hoạt, bạn sẽ thấy `(venv)` xuất hiện trước dòng lệnh.
+
+#### **📦 Bước 3: Cài đặt các thư viện cần thiết**
+
+```powershell
+pip install -r requirements.txt
+```
+
+**Danh sách thư viện sẽ được cài:**
+- Flask 3.0.0
+- Flask-Login 0.6.3
+- Flask-Bcrypt 1.0.1
+- Flask-WTF 1.2.1
+- Flask==2.3.3
+- Flask-SQLAlchemy==3.0.5
+- Werkzeug==2.3.7
+- Flask-Login==0.6.3
+- Flask-Mail==0.9.1
+
+#### **🗄️ Bước 4: Khởi tạo Database**
+
+```lấy từ file csv
+# chạy app.py sẽ tự động lấy dữ liệu và tự sinh.
+
+#### **▶️ Bước 5: Chạy ứng dụng**
+
+```powershell
+# Chạy Flask development server
+python app.py
+
+```
+
+**Server sẽ khởi động tại:**
+ - Running on http://127.0.0.1:5000
+ - Running on http://192.168.1.23:5000
 
 ---
+
+## 👤 **5. Tài khoản đăng nhập mặc định**
+
+Sau khi chạy lệnh `python app.`, hệ thống tạo sẵn 2 tài khoản:
+
+| Vai trò | Username | Password | Quyền hạn |
+|---------|----------|----------|-----------|
+| 👨‍💼 **admin** | `admin` | `admin123` | Toàn quyền hệ thống |
+| 👩‍💼 **reception** | `reception` | `reception123` | Quản lý cơ bản |
+
+---
+
+## 🗂️ **6. Cấu trúc thư mục dự án**
+
+--- 
+C:\BTL_
+├── app.py                          # File chính - Flask application
+├── requirements.txt                # Python dependencies
+├── medical_appointment.db          # SQLite database (tự động tạo)
+├── doctors.csv                     # Dữ liệu bác sĩ mẫu
+├── templates/                      # Jinja2 templates
+│   ├── base.html                  # Template layout chính
+│   ├── home.html                  # Trang chủ sau login
+│   ├── login.html                 # Trang đăng nhập
+│   ├── register.html              # Trang đăng ký
+│   ├── public_index.html          # Trang chủ công khai
+│   ├── public_appointment.html    # Đặt lịch không cần tài khoản
+│   ├── appointment_success.html   # Thông báo đặt lịch thành công
+│   ├── patient_dashboard.html     # Dashboard bệnh nhân
+│   ├── patients.html              # Quản lý bệnh nhân
+│   ├── doctors.html               # Quản lý bác sĩ
+│   ├── appointments.html          # Quản lý lịch hẹn
+│   ├── users.html                 # Quản lý người dùng (admin)
+│   └── index.html                 # Template dashboard
+├── static/                         # Static files
+│   ├── css/
+│   │   └── style.css              # Custom styles
+│   ├── js/
+│   │   └── script.js              # Custom JavaScript
+│   └── uploads/                   # Thư mục upload file
+└── README.md                       # Tài liệu dự án
+
+
+## 📜 **8. License**
+
+Dự án này được phát triển cho mục đích học tập tại **Khoa Công nghệ Thông tin - Đại học Đại Nam**.
+
+© 2025 - Đại học Đại Nam. All rights reserved.
+
+---
+
+## 📬 **9. Liên hệ**
+
+### **👨‍🎓 Sinh viên thực hiện**
+- **Họ tên:** Nguyễn Đức Anh
+- **Mã sinh viên:** 1671020023
+- **Lớp:** CNTT 16-04
+
+### **🏫 Đơn vị**
+- **Khoa:** Công nghệ thông tin
+- **Trường:** Đại học Đại Nam
+- 🌐 **Website:** [dainam.edu.vn/vi/khoa-cong-nghe-thong-tin](https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin)
+- 📱 **Fanpage:** [AIoTLab - FIT DNU](https://www.facebook.com/DNUAIoTLab)
+- 📧 **Email:** contact@example.com
+
+
+### **🔗 Repository**
+- **GitHub:** [github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh)
+- **Issues:** [ggithub.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh/issues](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh/issues)
+
+---
+
+<div align="center">
+
+### ⭐ **Nếu bạn thấy dự án hữu ích, hãy cho một Star nhé!** ⭐
+
+**Made with ❤️ by Students of DaiNam University**
+
+[![GitHub stars](https://img.shields.io/github/stars/pax-glitch/CDS-1604-QLTV?style=social)](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh)
+[![GitHub forks](https://img.shields.io/github/forks/pax-glitch/CDS-1604-QLTV?style=social)](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh/fork)
+
+
+</div>
