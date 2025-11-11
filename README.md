@@ -140,21 +140,21 @@ Flask-Mail==0.9.1
   <em>Dashboard: Giao diện bệnh nhân </em>
 </p>
 
-### **3.3. Quản lý Người dùng và Bác sĩ **
+### **3.3. Quản lý Người dùng và Bác sĩ**
 <p align="center">
   <img src="docs/quanly.png" alt="Quản lý người dùng và bác sĩ" width="600"/>
   <br>
   <em>Quản lý: Danh sách sách bác sĩ và người </em>
 </p>
 
-### **3.4. Quản lý bệnh nhân và lịch khám bệnh **
+### **3.4. Quản lý bệnh nhân và lịch khám bệnh**
 <p align="center">
   <img src="docs/nguoidung.png" alt="Chi tiết lịch khám " width="600"/>
   <br>
   <em>Chi tiết bệnh nhân: Hiển thị đầy đủ thông tin bệnh nhân.</em>
 </p>
 
-### **3.5. Quản lý Lịch hẹn **
+### **3.5. Quản lý Lịch hẹn**
 <p align="center">
   <img src="docs/lichhen.png" alt="Quản lý lịch hẹn" width="600"/>
   <br>
@@ -162,7 +162,7 @@ Flask-Mail==0.9.1
 </p>
 
 
-### **3.6. Quản lý bác sĩ **
+### **3.6. Quản lý bác sĩ**
 <p align="center">
   <img src="docs/bacsi.png" alt="Thông tin" width="600"/>
   <br>
@@ -239,8 +239,6 @@ pip install -r requirements.txt
 
 ```lấy từ file csv
 # chạy app.py sẽ tự động lấy dữ liệu và tự sinh.
-
-#### **▶️ Bước 5: Chạy ứng dụng**
 
 ```powershell
 # Chạy Flask development server
