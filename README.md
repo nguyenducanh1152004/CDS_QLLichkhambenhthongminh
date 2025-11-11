@@ -297,7 +297,7 @@ C:\BTL_
 ---
 
 
-## 📬 **8. Liên hệ**
+## 📬 **7. Liên hệ**
 
 ### **👨‍🎓 Sinh viên thực hiện**
 - **Họ tên:** Nguyễn Đức Anh
@@ -311,10 +311,6 @@ C:\BTL_
 - 📱 **Fanpage:** [AIoTLab - FIT DNU](https://www.facebook.com/DNUAIoTLab)
 - 📧 **Email:** anhnguyen0934422067@example.com
 
-
-### **🔗 Repository**
-- **GitHub:** [github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh)
-- **Issues:** [ggithub.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh/issues](https://github.com/nguyenducanh1152004/CDS_QLLichkhambenhthongminh/issues)
 
 ---
 
