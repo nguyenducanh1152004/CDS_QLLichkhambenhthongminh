@@ -267,7 +267,7 @@ Sau khi chạy lệnh `python app.`, hệ thống tạo sẵn 2 tài khoản:
 
 ## 🗂️ **6. Cấu trúc thư mục dự án**
 
---- 
+```
 C:\BTL_
 ├── app.py                          # File chính - Flask application
 ├── requirements.txt                # Python dependencies
@@ -294,9 +294,11 @@ C:\BTL_
 │   │   └── script.js              # Custom JavaScript
 │   └── uploads/                   # Thư mục upload file
 └── README.md                       # Tài liệu dự án
+```
 
+---
 
-## 📜 **8. License**
+## 📜 **7. License**
 
 Dự án này được phát triển cho mục đích học tập tại **Khoa Công nghệ Thông tin - Đại học Đại Nam**.
 
